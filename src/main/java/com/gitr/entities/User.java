@@ -37,6 +37,11 @@ public class User {
     @JsonManagedReference //data is saved in jason format||json object created for this note
     private Set<Note> noteSet = new HashSet<>();
 
+    //This will lazily retrive data on request,cascade- will delete the main table and also related tables of it
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonManagedReference //data is saved in jason format||json object created for this note
+    private Set<UserDetail> userDetailsSet = new HashSet<>();
+
     //constructor using UserDto
     public User(UserDto userDto){
         if (userDto.getUserName() != null){

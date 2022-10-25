@@ -1,14 +1,11 @@
 package com.gitr.dtos;
 
 import com.gitr.entities.Guest;
-import com.gitr.entities.UserDetails;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 // Dto(data access object) copy of entities without mapping annotations that connects
 // entities to the database

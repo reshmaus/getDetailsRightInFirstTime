@@ -1,6 +1,6 @@
 package com.gitr.dtos;
 
-import com.gitr.entities.UserDetails;
+import com.gitr.entities.UserDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDetailsDto implements Serializable {
+public class UserDetailDto implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;
@@ -35,7 +35,7 @@ public class UserDetailsDto implements Serializable {
     private String isUnauthorized;
     private Set<NoteDto> noteDtoSet = new HashSet<>();
 
-    public UserDetailsDto(UserDetails userDetails){
+    public UserDetailDto(UserDetail userDetails){
         if (userDetails.getId() != null){
             this.id = userDetails.getId();
         }

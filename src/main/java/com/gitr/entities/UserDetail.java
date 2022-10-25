@@ -1,21 +1,19 @@
 package com.gitr.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.gitr.dtos.UserDetailsDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.gitr.dtos.UserDetailDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity//the persistence objects stores as a record in the database,@Entity tells spring that this class is being mapped to a data source
 @Table(name = "UserDetails")//This is where you can set what table you want these objects to be mapped to
 @Data//generates getter and setters by lambok
 @AllArgsConstructor// we are writing these instead of creating constructer as lambook is creating for us.
 @NoArgsConstructor
-public class UserDetails {
+public class UserDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//it's a primary key and it's Id gets auto incremented
     private Long id;
@@ -71,13 +69,17 @@ public class UserDetails {
     @Column
     private String isUnauthorized;
 
+    @ManyToOne
+    @JsonBackReference
+    private User user;
+
     //This will lazily retrive data on request,cascade- will delete the main table and also related tables of it
 //    @OneToMany(mappedBy = "userDetails", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 //    @JsonManagedReference //data is saved in jason format||json object created for this note
 //    private Set<Note> noteSet = new HashSet<>();
 
     //constructor using UserDetailsDto
-    public UserDetails(UserDetailsDto userDetailsDto){
+    public UserDetail(UserDetailDto userDetailsDto){
         if (userDetailsDto.getFirstName() != null){
             this.firstName = userDetailsDto.getFirstName();
         }

@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-//This is where actual Bussiness logic is for Note scope, the fetch and push to DB happens
+//This is where actual Business logic is for Note scope, the fetch and push to DB happens
 
 // These services are used to execute CRUD SQL call using transactional and methods have been Implemented here
 @Service
