@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 // These services are used to execute CRUD SQL call using transactional and methods have been Implemented here
 @Service
-
 public class UserDetailServiceImpl implements UserDetailService{
     @Autowired
     private UserDetailRepository userDetailRepository;
