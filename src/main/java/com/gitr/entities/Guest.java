@@ -1,14 +1,11 @@
 package com.gitr.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gitr.dtos.GuestDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity//the persistence objects stores as a record in the database,@Entity tells spring that this class is being mapped to a data source
 @Table(name = "Guest")//This is where you can set what table you want these objects to be mapped to
@@ -68,7 +65,7 @@ public class Guest {
 //    @JsonManagedReference //data is saved in jason format||json object created for this note
 //    private Set<Note> noteSet = new HashSet<>();
 
-    //constructor using UserDetailsDto
+    //constructor using GuestDto
     public Guest(GuestDto guestDto){
         if (guestDto.getFirstName() != null){
             this.firstName = guestDto.getFirstName();
