@@ -5,7 +5,7 @@ const isProvider = getBool(getCookie('isProvider'))
 const submitForm = document.getElementById("note-form")
 const noteContainer = document.getElementById("note-container")
 
-if(loggedInUserId){
+if(!loggedInUserId){
     alert("Please login")
     window.location.replace("/login.html")
 }
