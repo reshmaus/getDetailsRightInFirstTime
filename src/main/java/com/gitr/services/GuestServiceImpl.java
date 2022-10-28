@@ -21,9 +21,11 @@ public class GuestServiceImpl implements GuestService{
     private GuestRepository guestRepository;
 
     @Override
-    public void addGuest(GuestDto guestDto) {
+    public Optional<GuestDto> addGuest(GuestDto guestDto) {
         Guest guest = new Guest(guestDto);
-        guestRepository.saveAndFlush(guest);
+        //guestRepository.saveAndFlush(guest);
+        guestRepository.save(guest);
+        return Optional.of(new GuestDto(guest));
     }
 
     @Override
@@ -33,12 +35,27 @@ public class GuestServiceImpl implements GuestService{
     }
 
     @Override
-    public void updateGuest(GuestDto guestDto) {
+    public Optional<GuestDto> updateGuest(GuestDto guestDto) {
         Optional<Guest> guestOptional = guestRepository.findById(guestDto.getId());
         guestOptional.ifPresent(guest -> {
-            Guest guestUpdate = new Guest(guestDto);
-            guestRepository.saveAndFlush(guestUpdate);
+            guest.setFirstName(guestDto.getFirstName());
+            guest.setLastName(guestDto.getLastName());
+            guest.setStreet1(guestDto.getStreet1());
+            guest.setStreet2(guestDto.getStreet2());
+            guest.setZipCode(guestDto.getZipCode());
+            guest.setCity(guestDto.getCity());
+            guest.setState(guestDto.getState());
+            guest.setCountry(guestDto.getCountry());
+            guest.setInsurance(guestDto.getInsurance());
+            guest.setType(guestDto.getType());
+            guest.setAdditionalDetails(guestDto.getAdditionalDetails());
+            guest.setCreatedDate(guestDto.getCreatedDate());
+            guest.setCreatedTime(guestDto.getCreatedTime());
+
+            guestRepository.saveAndFlush(guest);
         });
+
+        return Optional.of(new GuestDto(guestOptional.get()));
     }
 
     @Override

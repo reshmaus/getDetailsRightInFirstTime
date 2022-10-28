@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface GuestService {
     @Transactional
-    void addGuest(GuestDto guestDto);
+    Optional<GuestDto> addGuest(GuestDto guestDto);
 
     @Transactional
     void deleteGuest(Long guestId);
 
     @Transactional
-    void updateGuest(GuestDto guestDto);
+    Optional<GuestDto> updateGuest(GuestDto guestDto);
 
     List<GuestDto> getAllGuest();
 

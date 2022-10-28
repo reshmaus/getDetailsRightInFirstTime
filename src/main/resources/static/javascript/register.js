@@ -27,7 +27,7 @@ const registerCountry = document.getElementById('register-country')
        {
          providerName: registerUsername.value,
          street1: registerStreet1.value,
-         street1: registerStreet2.value,
+         street2: registerStreet2.value,
          zipcode: registerZipCode.value,
          city: registerCity.value,
          state: registerState.value,

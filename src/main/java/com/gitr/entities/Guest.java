@@ -24,9 +24,6 @@ public class Guest {
     private String lastName;
 
     @Column
-    private String address;
-
-    @Column
     private String street1;
 
     @Column
@@ -72,9 +69,6 @@ public class Guest {
         }
         if (guestDto.getLastName() != null){
             this.lastName = guestDto.getLastName();
-        }
-        if (guestDto.getAddress() != null){
-            this.address = guestDto.getAddress();
         }
         if (guestDto.getStreet1() != null){
             this.street1 = guestDto.getStreet1();

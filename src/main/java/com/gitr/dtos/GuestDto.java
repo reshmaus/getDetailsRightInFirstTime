@@ -16,7 +16,6 @@ public class GuestDto implements Serializable {
     private Long id;
     private String firstName;
     private String lastName;
-    private String address;
     private String street1;
     private String street2;
     private String zipCode;
@@ -40,9 +39,6 @@ public class GuestDto implements Serializable {
         }
         if (guest.getLastName() != null){
             this.lastName = guest.getLastName();
-        }
-        if (guest.getAddress() != null){
-            this.address = guest.getAddress();
         }
         if (guest.getStreet1() != null){
             this.street1 = guest.getStreet1();
