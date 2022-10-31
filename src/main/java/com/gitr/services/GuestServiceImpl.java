@@ -23,7 +23,6 @@ public class GuestServiceImpl implements GuestService{
     @Override
     public Optional<GuestDto> addGuest(GuestDto guestDto) {
         Guest guest = new Guest(guestDto);
-        //guestRepository.saveAndFlush(guest);
         guestRepository.save(guest);
         return Optional.of(new GuestDto(guest));
     }

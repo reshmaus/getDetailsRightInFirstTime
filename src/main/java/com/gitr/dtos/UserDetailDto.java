@@ -33,7 +33,7 @@ public class UserDetailDto implements Serializable {
     private String modifiedDate;
     private String modifiedTime;
     private String isUnauthorized;
-    private Set<NoteDto> noteDtoSet = new HashSet<>();
+    private Set<UserDto> useSet = new HashSet<>();
 
     public UserDetailDto(UserDetail userDetails){
         if (userDetails.getId() != null){

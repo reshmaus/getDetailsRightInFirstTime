@@ -40,7 +40,7 @@ const guestCheckbox = document.getElementById('guest-checkbox')
             });
     };
 
-    // Open call method, on js load
+    // Open call to method, on page and js load, beginning point of Js call
     if(id > 0) {
         getGuestDetail();
         interval = setInterval(function() {

@@ -22,6 +22,7 @@ import java.util.Set;
         private String email;
         private String phoneNumber;
         private Set<NoteDto> noteDtoSet = new HashSet<>();
+        private Set<UserDetailDto> userDetailDtoSet = new HashSet<>();
 
         public UserDto(User user) {
             if (user.getId() != null){
