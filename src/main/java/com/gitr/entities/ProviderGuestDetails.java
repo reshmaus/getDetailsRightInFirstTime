@@ -21,7 +21,7 @@ public class ProviderGuestDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)//it's a primary key and it's Id gets auto incremented
     private Long id;
 
-    @Column(unique = true)
+    @Column
     private String userName;
 
     @Column

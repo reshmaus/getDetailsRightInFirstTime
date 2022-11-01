@@ -1,5 +1,6 @@
 package com.gitr.controllers;
 
+import com.gitr.dtos.GuestDto;
 import com.gitr.dtos.UserDetailDto;
 import com.gitr.services.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,14 @@ public class UserDetailController {
 
     // This is rest Api for adding/creating user detail under given user id
     @PostMapping("/create/{userId}")
-    public void addUserUserDetail(@RequestBody UserDetailDto userDetailDto,@PathVariable Long userId){
-        userDetailService.addUserUserDetail(userDetailDto, userId);
+    public Optional<UserDetailDto> addUserUserDetail(@RequestBody UserDetailDto userDetailDto, @PathVariable Long userId){
+        return userDetailService.addUserUserDetail(userDetailDto, userId);
     }
 
     // This is rest Api for delete the specific user detail by user detail id
     @DeleteMapping("/delete/{userDetailId}")
-    public void deleteUserDetailById(@PathVariable Long UserDetailId){
-        userDetailService.deleteUserDetailById(UserDetailId);
+    public void deleteUserDetailById(@PathVariable Long userDetailId){
+        userDetailService.deleteUserDetailById(userDetailId);
     }
 
     @GetMapping("/getById/{userDetailId}")
@@ -41,7 +42,7 @@ public class UserDetailController {
 
     // This is rest Api for updating the user detail
     @PutMapping("/update")
-    public void updateUserDetailById(@RequestBody UserDetailDto userDetailDto){
-        userDetailService.updateUserDetailById(userDetailDto);
+    public Optional<UserDetailDto> updateUserDetailById(@RequestBody UserDetailDto userDetailDto){
+        return userDetailService.updateUserDetailById(userDetailDto);
     }
 }

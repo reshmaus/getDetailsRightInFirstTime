@@ -1,5 +1,6 @@
 package com.gitr.services;
 
+import com.gitr.dtos.GuestDto;
 import com.gitr.dtos.UserDetailDto;
 import com.gitr.entities.User;
 import com.gitr.entities.UserDetail;
@@ -29,11 +30,12 @@ public class UserDetailServiceImpl implements UserDetailService{
     private UserRepository userRepository;
 
     @Override
-    public void addUserUserDetail(UserDetailDto userDetailDto, Long userId) {
+    public Optional<UserDetailDto> addUserUserDetail(UserDetailDto userDetailDto, Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         UserDetail userDetail = new UserDetail(userDetailDto);
-        userOptional.ifPresent(userDetail::setUser);
-        userDetailRepository.saveAndFlush(userDetail);
+        userOptional.ifPresent(userDetail::setUser); 
+        userDetailRepository.save(userDetail);
+        return Optional.of(new UserDetailDto(userDetail));
     }
 
     @Override
@@ -43,12 +45,28 @@ public class UserDetailServiceImpl implements UserDetailService{
     }
 
     @Override
-    public void updateUserDetailById(UserDetailDto userDetailDto) {
+    public Optional<UserDetailDto> updateUserDetailById(UserDetailDto userDetailDto) {
         Optional<UserDetail> userDetailOptional = userDetailRepository.findById(userDetailDto.getId() );
         userDetailOptional.ifPresent(userDetail -> {
             UserDetail userDetailUpdate = new UserDetail(userDetailDto);
-            userDetailRepository.saveAndFlush(userDetailUpdate);
+            userDetail.setFirstName(userDetailDto.getFirstName());
+            userDetail.setLastName(userDetailDto.getLastName());
+            userDetail.setStreet1(userDetailDto.getStreet1());
+            userDetail.setStreet2(userDetailDto.getStreet2());
+            userDetail.setZipCode(userDetailDto.getZipCode());
+            userDetail.setCity(userDetailDto.getCity());
+            userDetail.setState(userDetailDto.getState());
+            userDetail.setCountry(userDetailDto.getCountry());
+            userDetail.setInsurance(userDetailDto.getInsurance());
+            userDetail.setType(userDetailDto.getType());
+            userDetail.setAdditionalDetails(userDetailDto.getAdditionalDetails());
+            userDetail.setCreatedDate(userDetailDto.getCreatedDate());
+            userDetail.setCreatedTime(userDetailDto.getCreatedTime());
+
+            userDetailRepository.saveAndFlush(userDetail);
         });
+
+        return Optional.of(new UserDetailDto(userDetailOptional.get()));
     }
 
     @Override

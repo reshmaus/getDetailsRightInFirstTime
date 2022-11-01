@@ -42,11 +42,10 @@ public class ProviderServiceImpl implements ProviderService  {
                 response.add("http://localhost:8080/home.html");
                 response.add(String.valueOf(providerOptional.get().getId()));
             }else{
-                response.add("ProviderName or password incorrect");
+                response.add("Provider password incorrect");
             }
-
         }else{
-            response.add("ProviderName or password incorrect");
+            response.add("Provider name is incorrect");
         }
         return response;
     }

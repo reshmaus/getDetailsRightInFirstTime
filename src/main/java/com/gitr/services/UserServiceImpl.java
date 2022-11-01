@@ -41,14 +41,16 @@ public class UserServiceImpl implements UserService {
             Optional<User> userOptional = userRepository.findByUserName(userDto.getUserName());
              if(userOptional.isPresent()){
                  if(passwordEncoder.matches(userDto.getPassword(), userOptional.get().getPassword())){
-                     response.add("http://localhost:8080/home.html");
+                     response.add("successful");
                      response.add(String.valueOf(userOptional.get().getId()));
                  }else{
-                     response.add("UserName or password incorrect");
+                     response.add("error");
+                     response.add("User password incorrect");
                  }
 
              }else{
-                 response.add("UserName or password incorrect");
+                 response.add("error");
+                 response.add("User name is incorrect");
              }
 
 

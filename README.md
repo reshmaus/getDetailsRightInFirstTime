@@ -8,7 +8,8 @@ MVP - Get all details right in first call, avoid all Cascading effect for the fu
  Whenever a guest call’s to book an appointment [[ or insurance, order pizza, food etc…]] , The conversation starts with Capturing the details of the guest. On average the call take’s 1.5 to 4 min’s and extends up to 10 to 15 min’s. To get all the details up front. 
 Which starts from First name and ends with insurance details. 
 
-Close to  70% of time all the information is captured right. And the other 30% is not due to a lot of reason’s. 
+Close to  70% of time all the information is captured right.
+And the other 30% is not due to a lot of reason’s. 
 * Network issues 
 * Fluency issues 
 * Spelling mistakes from both sides 
@@ -28,7 +29,7 @@ SOLUTION: The way to have all the information right at first place is to have gu
 
 Guests can choose to save for the future and keep updating it so providers know what changed for future reference Or Guest wise to only share for one time it will expire in 30 min’s with Unique id. 
 
-This will help to have 95% to 98% upfront the details right. 
+This will help to have 90% to 95% upfront the details right. 
 
 Guests can login and create and have it handy to share and other sides they know with a phone number. 
 * Login

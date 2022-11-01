@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface UserDetailService {
     @Transactional
-    void addUserUserDetail(UserDetailDto userDetailDto, Long userId);
+    Optional<UserDetailDto> addUserUserDetail(UserDetailDto userDetailDto, Long userId);
 
     @Transactional
     void deleteUserDetailById(Long userDetailId);
 
     @Transactional
-    void updateUserDetailById(UserDetailDto userDetailDto);
+    Optional<UserDetailDto> updateUserDetailById(UserDetailDto userDetailDto);
 
     List<UserDetailDto> getAllUserDetailByUserId(Long userId);
 

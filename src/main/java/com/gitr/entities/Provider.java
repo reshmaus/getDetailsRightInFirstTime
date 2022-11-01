@@ -32,7 +32,7 @@ public class Provider {
     @Column
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Column
     private String street1;
 
     @Column
