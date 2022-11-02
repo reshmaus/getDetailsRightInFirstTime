@@ -84,3 +84,46 @@ input:checked + .slider:before {
 }
 
 /*Toggle button css ends*/
+.headerBanner {
+    height: 70px;
+    width: 100%;
+    background-color: coral;
+}
+
+.profilePicture {
+    border: 3px solid white;
+    border-radius: 50%;
+    width: 130px;
+    height: 70px;
+    background-color: #e4e477;
+    font-size: 20px;
+}
+
+.footerBanner {
+    height: 30px;
+    width: 100%;
+    background-color: coral;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+
+}
+
+.getItRight {
+  background-color: #b5c342;
+  animation-name: spin;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  color: #8a2be2;
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(20deg);
+    }
+}
