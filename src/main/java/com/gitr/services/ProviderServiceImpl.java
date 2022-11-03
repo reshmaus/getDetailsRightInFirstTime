@@ -39,12 +39,14 @@ public class ProviderServiceImpl implements ProviderService  {
         Optional<Provider> providerOptional = providerRepository.findByProviderName(providerDto.getProviderName());
         if(providerOptional.isPresent()){
             if(passwordEncoder.matches(providerDto.getPassword(), providerOptional.get().getPassword())){
-                response.add("http://localhost:8080/home.html");
+                response.add("successful");
                 response.add(String.valueOf(providerOptional.get().getId()));
             }else{
+                response.add("error");
                 response.add("Provider password incorrect");
             }
         }else{
+            response.add("error");
             response.add("Provider name is incorrect");
         }
         return response;

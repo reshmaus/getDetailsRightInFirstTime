@@ -1,6 +1,7 @@
 const loginForm = document.getElementById('login-form')
 const loginUsername = document.getElementById('login-username')
 const loginPassword = document.getElementById('login-password')
+const errorDiv = document.getElementById('error-div')
 const registerProviderCheckbox = document.getElementById('registry-provider-checkbox')
 
     if(registerProviderCheckbox.checked) {
@@ -18,6 +19,8 @@ const registerProviderCheckbox = document.getElementById('registry-provider-chec
 
     const handleSubmit = async (e) => {
        e.preventDefault()
+       errorDiv.innerHTML = "";
+       errorDiv.classList.add('hide')
 
        let nameType = registerProviderCheckbox.checked ?
        {
@@ -44,9 +47,12 @@ const registerProviderCheckbox = document.getElementById('registry-provider-chec
 
        const responseArr = await response.json()
 
-       if (response.status === 200){
+       if (response.status === 200 && responseArr[0] === 'successful'){
            setCookie('loggedInUserId', responseArr[1])
-           window.location.replace(responseArr[0])
+           window.location.replace('http://localhost:8080/home.html')
+       } else if(response.status === 200 && responseArr[0] === 'error'){
+            errorDiv.innerHTML = responseArr[1];
+            errorDiv.classList.remove('hide')
        }
 
     }
@@ -54,6 +60,9 @@ const registerProviderCheckbox = document.getElementById('registry-provider-chec
 
     const handleProviderToggle = (e) => {
        e.preventDefault()
+       errorDiv.innerHTML = "";
+       errorDiv.classList.add('hide')
+
        if(registerProviderCheckbox.checked){
            setCookie('isProvider', true)
        } else {
