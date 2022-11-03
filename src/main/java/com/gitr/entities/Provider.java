@@ -55,6 +55,11 @@ public class Provider {
     @JsonManagedReference //data is saved in jason format||json object created for this note
     private Set<Note> noteSet = new HashSet<>();
 
+    //This will lazily retrive data on request,cascade- will delete the main table and also related tables of it
+    @OneToMany(mappedBy = "provider", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonManagedReference //data is saved in jason format||json object created for this note
+    private Set<Guest> guestSet = new HashSet<>();
+
     //constructor using ProviderDto
     public Provider(ProviderDto providerDto){
         if (providerDto.getProviderName() != null){

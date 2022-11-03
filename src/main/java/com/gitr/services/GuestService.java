@@ -8,6 +8,12 @@ import java.util.Optional;
 
 public interface GuestService {
     @Transactional
+    Optional<GuestDto> addProviderGuest(GuestDto guestDto, Long providerId);
+
+    @Transactional
+    List<GuestDto> getAllUserDetailByUserId(Long providerId);
+
+    @Transactional
     Optional<GuestDto> addGuest(GuestDto guestDto);
 
     @Transactional

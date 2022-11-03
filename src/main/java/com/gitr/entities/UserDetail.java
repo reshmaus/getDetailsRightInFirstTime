@@ -1,12 +1,15 @@
 package com.gitr.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gitr.dtos.UserDetailDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity//the persistence objects stores as a record in the database,@Entity tells spring that this class is being mapped to a data source
 @Table(name = "UserDetails")//This is where you can set what table you want these objects to be mapped to
@@ -73,7 +76,11 @@ public class UserDetail {
     @JsonBackReference
     private User user;
 
-    //constructor using UserDetailsDto
+    @ManyToMany(mappedBy = "userDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonManagedReference //data is saved in jason format||json object created for this note
+    private Set<ProviderGuestDetail> providerGuestDetail = new HashSet<>();
+
+    //constructor using UserDetailDto
     public UserDetail(UserDetailDto userDetailsDto){
         if (userDetailsDto.getFirstName() != null){
             this.firstName = userDetailsDto.getFirstName();

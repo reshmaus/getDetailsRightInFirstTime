@@ -1,8 +1,11 @@
 package com.gitr.services;
 
 import com.gitr.dtos.GuestDto;
-import com.gitr.entities.Guest;
+import com.gitr.dtos.NoteDto;
+import com.gitr.dtos.UserDetailDto;
+import com.gitr.entities.*;
 import com.gitr.repositories.GuestRepository;
+import com.gitr.repositories.ProviderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,29 @@ import java.util.stream.Collectors;
 public class GuestServiceImpl implements GuestService{
     @Autowired
     private GuestRepository guestRepository;
+
+    @Autowired
+    private ProviderRepository providerRepository;
+
+    @Override
+    public Optional<GuestDto> addProviderGuest(GuestDto guestDto, Long providerId) {
+        Optional<Provider> providerOptional = providerRepository.findById(providerId);
+        Guest guest = new Guest(guestDto);
+        providerOptional.ifPresent(guest::setProvider);
+        guestRepository.save(guest);
+        return Optional.of(new GuestDto(guest));
+    }
+
+    @Override
+    public List<GuestDto> getAllUserDetailByUserId(Long providerId) {
+        Optional<Provider> providerOptional = providerRepository.findById(providerId);
+        if(providerOptional.isPresent()){
+            List<Guest> guestList = guestRepository.findAllByProviderEquals(providerOptional.get());
+            return guestList.stream().map(guest -> new GuestDto(guest)).collect(Collectors.toList());
+
+        }
+        return Collections.emptyList();
+    }
 
     @Override
     public Optional<GuestDto> addGuest(GuestDto guestDto) {

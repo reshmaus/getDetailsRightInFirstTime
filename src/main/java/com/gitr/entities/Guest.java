@@ -1,5 +1,6 @@
 package com.gitr.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.gitr.dtos.GuestDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,6 +56,10 @@ public class Guest {
 
     @Column
     private String createdTime;
+
+    @ManyToOne
+    @JsonBackReference
+    private Provider provider;
 
 
     //This will lazily retrive data on request,cascade- will delete the main table and also related tables of it
