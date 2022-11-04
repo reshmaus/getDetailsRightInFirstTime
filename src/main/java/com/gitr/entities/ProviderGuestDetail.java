@@ -1,16 +1,11 @@
 package com.gitr.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.gitr.dtos.ProviderGuestDetailDto;
-import com.gitr.dtos.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 //the persistence objects stores as a record in the database,@Entity tells spring that this class is being mapped to a data source
@@ -23,6 +18,9 @@ public class ProviderGuestDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)//it's a primary key and it's Id gets auto incremented
     private Long id;
 
+    @Column
+    private String details;
+
 //    @ManyToMany
 //    @JsonBackReference
 //    private Set<Guest> guestSet = new HashSet<>();
@@ -31,22 +29,26 @@ public class ProviderGuestDetail {
 //    @JsonBackReference
 //    private Set<Provider> providerSet = new HashSet<>();
 
-    @ManyToMany(mappedBy = "providerGuestDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JsonManagedReference //data is saved in jason format||json object created for this note
-    private Set<Guest> guest = new HashSet<>();
-
-    @ManyToMany(mappedBy = "providerGuestDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JsonManagedReference //data is saved in jason format||json object created for this note
-    private Set<UserDetail> userDetail = new HashSet<>();
-
-    @ManyToMany(mappedBy = "providerGuestDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JsonManagedReference //data is saved in jason format||json object created for this note
-    private Set<Provider> provider = new HashSet<>();
+//    @ManyToMany(mappedBy = "providerGuestDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    @JsonManagedReference //data is saved in jason format||json object created for this note
+//    private Set<Guest> guest = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "providerGuestDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    @JsonManagedReference //data is saved in jason format||json object created for this note
+//    private Set<UserDetail> userDetail = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "providerGuestDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    @JsonManagedReference //data is saved in jason format||json object created for this note
+//    private Set<Provider> provider = new HashSet<>();
 
     //constructor using UserDto
     public ProviderGuestDetail(ProviderGuestDetailDto providerGuestDetailDto){
-        if (providerGuestDetailDto.getId() != null){
-            this.id = providerGuestDetailDto.getId();
+//        if (providerGuestDetailDto.getId() != null){
+//            this.id = providerGuestDetailDto.getId();
+//        }
+
+        if (providerGuestDetailDto.getDetails() != null){
+            this.details = providerGuestDetailDto.getDetails();
         }
     }
 }

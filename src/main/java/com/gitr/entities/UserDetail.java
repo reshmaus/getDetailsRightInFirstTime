@@ -76,9 +76,9 @@ public class UserDetail {
     @JsonBackReference
     private User user;
 
-    @ManyToMany(mappedBy = "userDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JsonManagedReference //data is saved in jason format||json object created for this note
-    private Set<ProviderGuestDetail> providerGuestDetail = new HashSet<>();
+//    @ManyToMany(mappedBy = "userDetail", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+//    @JsonManagedReference //data is saved in jason format||json object created for this note
+//    private Set<ProviderGuestDetail> providerGuestDetail = new HashSet<>();
 
     //constructor using UserDetailDto
     public UserDetail(UserDetailDto userDetailsDto){

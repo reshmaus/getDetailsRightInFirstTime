@@ -2,7 +2,23 @@ const loggedInUserId = getCookie('loggedInUserId')
 const isProvider = getBool(getCookie('isProvider'))
 
 //DOM Elements
+const userDetailForm = document.getElementById('user-detail-form')
+const userDetailFirstname = document.getElementById('user-detail-firstname')
+const userDetailLastname = document.getElementById('user-detail-lastname')
+const userDetailStreet1 = document.getElementById('user-detail-street-1')
+const userDetailStreet2 = document.getElementById('user-detail-street-2')
+const userDetailZipCode = document.getElementById('user-detail-zip-code')
+const userDetailCity = document.getElementById('user-detail-city')
+const userDetailState = document.getElementById('user-detail-state')
+const userDetailCountry = document.getElementById('user-detail-country')
+const userDetailInsurance = document.getElementById('user-detail-insurance')
+const userDetailType = document.getElementById('user-detail-type')
+const userDetailAdditionalDetails = document.getElementById('user-detail-additionalDetails')
+const tableBody = document.getElementById("table-body")
+const tableDetails = document.getElementById("table-details")
+const addNewType = document.getElementById("create-new-button")
 const submitForm = document.getElementById("note-form")
+const errorDiv = document.getElementById("error-div")
 const noteContainer = document.getElementById("note-container")
 
 if(!loggedInUserId){
@@ -10,6 +26,166 @@ if(!loggedInUserId){
     window.location.replace("/login.html")
 }
 
+// Below code is for User Details
+const baseUserDetailUrl = 'http://localhost:8080/api/v1/userDetail'
+
+let selectedId = 0; // This has to be selected id
+
+ const getUserDetail = (id) => {
+        axios.get(`${baseUserDetailUrl}/getById/${id}`)
+            .then((res) => {
+                const userDetailInfo = res.data;
+                console.log("--- get by id userDetail Info --",userDetailInfo);
+                if(userDetailInfo.id) {
+                     userDetailFirstname.value = userDetailInfo.firstName ;
+                     userDetailLastname.value = userDetailInfo.lastName ;
+                     userDetailStreet1.value = userDetailInfo.street1 ;
+                     userDetailStreet2.value = userDetailInfo.street2 ;
+                     userDetailZipCode.value = userDetailInfo.zipCode ;
+                     userDetailCity.value = userDetailInfo.city ;
+                     userDetailState.value = userDetailInfo.state ;
+                     userDetailCountry.value = userDetailInfo.country ;
+                     userDetailInsurance.value = userDetailInfo.insurance ;
+                     userDetailType.value = userDetailInfo.type ;
+                     userDetailAdditionalDetails.value = userDetailInfo.additionalDetails ;
+                }
+            });
+    };
+
+const editUserDetails = (id) => {
+     selectedId = id;
+     getUserDetail(id);
+     userDetailForm.classList.remove('hide')
+}
+
+const deleteUserDetails = (id) => {
+     axios.delete(`${baseUserDetailUrl}/delete/${id}`)
+     .then(res => {
+         alert("Information deleted successfully.. ");
+         getAllUserUserDetail();
+         userDetailForm.classList.add('hide')
+     });
+}
+
+
+const shareUserDetails = (id) => {
+     // Copy the text inside the text field
+     navigator.clipboard.writeText(`User/${loggedInUserId}/${id}`);
+
+     // Alert the copied text
+     alert("Copied user id and details if to clipboard for sharing : " + `User/${loggedInUserId}/${id}`);
+}
+
+
+const getAllUserUserDetail = () => {
+         tableBody.innerHTML = "";
+        axios.get(`${baseUserDetailUrl}/getAllByUserId/${loggedInUserId}`)
+            .then((res) => {
+                const userDetailInfo  = res.data;
+                console.log("--- All user user detail Info --", userDetailInfo);
+                if(userDetailInfo && userDetailInfo.length > 0){
+                    tableDetails.classList.remove('hide')
+                    for(let i=0; i<userDetailInfo.length; i++){
+                        const tableRow = `<tr>
+                                                 <th scope="row">${userDetailInfo[i].type}</th>
+                                                 <td><button class="btn btn-secondary" onclick=shareUserDetails(${userDetailInfo[i].id})> Share </button></td>
+                                                 <td><button class="btn btn-secondary" onclick=editUserDetails(${userDetailInfo[i].id})> Edit </button></td>
+                                                 <td><button class="btn btn-secondary" onclick=deleteUserDetails(${userDetailInfo[i].id})> Delete </button></td>
+                                               </tr>
+                                             `;
+
+                        tableBody.innerHTML += tableRow;
+                    }
+                } else {
+                    tableDetails.classList.add('hide')
+                }
+            });
+    };
+
+// Open call to method, on page and js load, beginning point of Js call
+getAllUserUserDetail();
+
+const createUpdateSubmit = async (e) => {
+       e.preventDefault()
+       if(!userDetailType.value || !userDetailFirstname.value || !userDetailLastname.value){
+           errorDiv.classList.remove('hide')
+           return;
+       }
+       errorDiv.classList.add('hide')
+
+       let bodyObj = {
+           firstName: userDetailFirstname.value,
+           lastName: userDetailLastname.value,
+           street1: userDetailStreet1.value,
+           street2: userDetailStreet2.value,
+           zipCode: userDetailZipCode.value,
+           city: userDetailCity.value,
+           state: userDetailState.value,
+           country: userDetailCountry.value,
+           insurance: userDetailInsurance.value,
+           type: userDetailType.value,
+           additionalDetails: userDetailAdditionalDetails.value,
+       }
+       let apiUrl = `${baseUserDetailUrl}/create/${loggedInUserId}`;
+
+       //Update userDetail details with id
+       if(selectedId > 0) {
+            apiUrl = `${baseUserDetailUrl}/update`;
+            bodyObj = {
+                ...bodyObj,
+                id: selectedId,
+            }
+
+            axios.put(apiUrl, bodyObj)
+                 .then((res) => {
+                     console.log("--Updated User Detail--", res.data)
+                     if(res.data.id){
+                         getUserDetail(res.data.id);
+                         getAllUserUserDetail();
+                     }
+                 })
+                 .catch(error => {
+                     console.log(error.response.data.error)
+                 })
+       } else {
+           // Create userDetail
+           axios.post(apiUrl, bodyObj)
+                 .then((res) => {
+                     console.log("--Created User  Detail--", res.data)
+                     if(res.data.id){
+                        getAllUserUserDetail();
+                        selectedId = res.data.id;
+                        getUserDetail(res.data.id);
+                     }
+                 })
+                  .catch(error => {
+                      console.log(error.response.data.error)
+                  })
+       }
+    }
+
+const addNewClick = (e) => {
+    e.preventDefault()
+    selectedId = 0;
+    userDetailForm.classList.remove('hide')
+
+    userDetailFirstname.value = "";
+    userDetailLastname.value = "";
+    userDetailStreet1.value = "";
+    userDetailStreet2.value = "";
+    userDetailZipCode.value = "";
+    userDetailCity.value = "";
+    userDetailState.value = "";
+    userDetailCountry.value = "";
+    userDetailInsurance.value = "";
+    userDetailType.value = "";
+    userDetailAdditionalDetails.value = "";
+}
+
+userDetailForm.addEventListener("submit", createUpdateSubmit)
+addNewType.addEventListener("click", addNewClick)
+
+// Below this line is the code from class for note
 //Modal Elements
 let noteBody = document.getElementById(`note-body`)
 let updateNoteBtn = document.getElementById('update-note-button')
@@ -93,13 +269,12 @@ const createNoteCards = (array) => {
     noteContainer.innerHTML = ''
     array.forEach(obj => {
         let noteCard = document.createElement("div")
-        noteCard.classList.add("m-2")
         noteCard.innerHTML = `
-            <div class="card d-flex" style="width: 18rem; height: 18rem;">
-                <div class="card-body d-flex flex-column  justify-content-between" style="height: available">
+            <div class="card d-flex" >
+                <div class="card-body d-flex flex-column justify-content-between" style="height: available">
                     <p class="card-text">${obj.body}</p>
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-danger" onclick="handleDelete(${obj.id})">Delete</button>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-danger me-2" onclick="handleDelete(${obj.id})">Delete</button>
                         <button onclick="getNoteById(${obj.id})" type="button" class="btn btn-primary"
                         data-bs-toggle="modal" data-bs-target="#note-edit-modal">
                         Edit

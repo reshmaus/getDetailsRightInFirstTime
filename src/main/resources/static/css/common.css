@@ -2,7 +2,9 @@ body {
     font-style: italic;
     background-color: #fffabd !important;
     height: 100%;
+
  }
+
 
 .hide {
     display: none;
