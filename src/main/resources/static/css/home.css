@@ -3,3 +3,9 @@
     table-layout: fixed;
 }
 
+footer {
+    position: sticky;
+    margin-top: 85px;
+    top: 100vh;
+}
+

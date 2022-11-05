@@ -20,6 +20,7 @@ const addNewType = document.getElementById("create-new-button")
 const submitForm = document.getElementById("note-form")
 const errorDiv = document.getElementById("error-div")
 const noteContainer = document.getElementById("note-container")
+const logout = document.getElementById("logout")
 
 if(!loggedInUserId){
     alert("Please login")
@@ -85,6 +86,7 @@ const getAllUserUserDetail = () => {
                 console.log("--- All user user detail Info --", userDetailInfo);
                 if(userDetailInfo && userDetailInfo.length > 0){
                     tableDetails.classList.remove('hide')
+                    addNewType.classList.remove('hide')
                     for(let i=0; i<userDetailInfo.length; i++){
                         const tableRow = `<tr>
                                                  <th scope="row">${userDetailInfo[i].type}</th>
@@ -98,6 +100,8 @@ const getAllUserUserDetail = () => {
                     }
                 } else {
                     tableDetails.classList.add('hide')
+                    addNewType.classList.add('hide')
+                    addNewClick();
                 }
             });
     };
@@ -165,7 +169,7 @@ const createUpdateSubmit = async (e) => {
     }
 
 const addNewClick = (e) => {
-    e.preventDefault()
+    if(e) { e.preventDefault() }
     selectedId = 0;
     userDetailForm.classList.remove('hide')
 
@@ -272,10 +276,10 @@ const createNoteCards = (array) => {
         noteCard.innerHTML = `
             <div class="card d-flex" >
                 <div class="card-body d-flex flex-column justify-content-between" style="height: available">
-                    <p class="card-text">${obj.body}</p>
+                    <p class="card-text mb-1">${obj.body}</p>
                     <div class="d-flex justify-content-end">
-                        <button class="btn btn-danger me-2" onclick="handleDelete(${obj.id})">Delete</button>
-                        <button onclick="getNoteById(${obj.id})" type="button" class="btn btn-primary"
+                        <button class="btn btn-link me-2 btn-sm" onclick="handleDelete(${obj.id})">Delete</button>
+                        <button onclick="getNoteById(${obj.id})" type="button" class="btn btn-link btn-sm"
                         data-bs-toggle="modal" data-bs-target="#note-edit-modal">
                         Edit
                         </button>
@@ -286,8 +290,10 @@ const createNoteCards = (array) => {
         noteContainer.append(noteCard);
     })
 }
-function handleLogout(){
-    deleteCookie('loggedInUserId');
+function handleLogout(e){
+    e.preventDefault()
+    deleteCookie('loggedInUserId')
+    window.location.replace("/login.html")
 }
 
 const populateModal = (obj) =>{
@@ -299,6 +305,7 @@ const populateModal = (obj) =>{
 getNotes(loggedInUserId);
 
 submitForm.addEventListener("submit", handleSubmit)
+logout.addEventListener("click", handleLogout)
 
 updateNoteBtn.addEventListener("click", (e)=>{
     let noteId = e.target.getAttribute('data-note-id')

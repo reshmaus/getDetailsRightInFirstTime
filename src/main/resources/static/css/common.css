@@ -1,13 +1,27 @@
 body {
     font-style: italic;
     background-color: #fffabd !important;
-    height: 100%;
+    height: 100vh;
+    background-image: linear-gradient(white, #feb47b, white);
 
  }
 
+.rightNav{
+    display: flex;
+    justify-content: flex-end;
+    right: 0;
+    position: absolute;
+    margin-right: 16px;
+    margin-top: 38px;
+}
 
 .hide {
     display: none;
+}
+
+.horizontalLine {
+    border: 2px solid;
+    margin: 10px -20px;
 }
 
 .flexDiv {
@@ -89,7 +103,7 @@ input:checked + .slider:before {
 .headerBanner {
     height: 70px;
     width: 100%;
-    background-color: coral;
+    background-color:coral;
 }
 
 .profilePicture {
