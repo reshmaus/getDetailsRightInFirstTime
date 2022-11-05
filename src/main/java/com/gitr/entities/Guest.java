@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity//the persistence objects stores as a record in the database,@Entity tells spring that this class is being mapped to a data source
 @Table(name = "Guest")//This is where you can set what table you want these objects to be mapped to
@@ -60,12 +62,6 @@ public class Guest {
     @ManyToOne
     @JsonBackReference
     private Provider provider;
-
-
-    //This will lazily retrive data on request,cascade- will delete the main table and also related tables of it
-//    @OneToMany(mappedBy = "guest", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-//    @JsonManagedReference //data is saved in jason format||json object created for this note
-//    private Set<Note> noteSet = new HashSet<>();
 
     //constructor using GuestDto
     public Guest(GuestDto guestDto){

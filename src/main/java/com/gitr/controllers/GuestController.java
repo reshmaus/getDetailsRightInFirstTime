@@ -21,6 +21,17 @@ public class GuestController {
         return guestService.getAllGuest();
     }
 
+    @GetMapping("/getAllGuestByProviderId/{providerId}")
+    public List<GuestDto> getAllGuestByProviderId(@PathVariable Long providerId) {
+        return guestService.getAllGuestByProviderId(providerId);
+    }
+
+    // This is rest Api for adding/creating guest
+    @PostMapping("/createGuestByProviderId/{providerId}")
+    public Optional<GuestDto> addProviderGuest(@RequestBody GuestDto guestDto, @PathVariable Long providerId) {
+        return guestService.addProviderGuest(guestDto, providerId);
+    }
+
     // This is rest Api for adding/creating guest
     @PostMapping("/create")
     public Optional<GuestDto> addGuest(@RequestBody GuestDto guestDto) {

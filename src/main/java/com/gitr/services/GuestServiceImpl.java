@@ -36,12 +36,11 @@ public class GuestServiceImpl implements GuestService{
     }
 
     @Override
-    public List<GuestDto> getAllUserDetailByUserId(Long providerId) {
+    public List<GuestDto> getAllGuestByProviderId(Long providerId) {
         Optional<Provider> providerOptional = providerRepository.findById(providerId);
         if(providerOptional.isPresent()){
             List<Guest> guestList = guestRepository.findAllByProviderEquals(providerOptional.get());
             return guestList.stream().map(guest -> new GuestDto(guest)).collect(Collectors.toList());
-
         }
         return Collections.emptyList();
     }

@@ -11,7 +11,7 @@ public interface GuestService {
     Optional<GuestDto> addProviderGuest(GuestDto guestDto, Long providerId);
 
     @Transactional
-    List<GuestDto> getAllUserDetailByUserId(Long providerId);
+    List<GuestDto> getAllGuestByProviderId(Long providerId);
 
     @Transactional
     Optional<GuestDto> addGuest(GuestDto guestDto);

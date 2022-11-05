@@ -49,11 +49,18 @@ const registerProviderCheckbox = document.getElementById('registry-provider-chec
 
        if (response.status === 200 && responseArr[0] === 'successful'){
            setCookie('loggedInUserId', responseArr[1])
+           setCookie('loggedInUserName', loginUsername.value)
            window.location.replace('http://localhost:8080/home.html')
        } else if(response.status === 200 && responseArr[0] === 'error'){
             errorDiv.innerHTML = responseArr[1];
             errorDiv.classList.remove('hide')
        }
+
+//       if(registerProviderCheckbox.checked){
+//           window.location.replace('http://localhost:8080/provider.html')
+//       } else {
+//           window.location.replace('http://localhost:8080/home.html')
+//       }
 
     }
     loginForm.addEventListener("submit", handleSubmit)

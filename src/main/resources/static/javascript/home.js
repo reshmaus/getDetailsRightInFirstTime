@@ -1,4 +1,5 @@
 const loggedInUserId = getCookie('loggedInUserId')
+const loggedInUserName = getCookie('loggedInUserName')
 const isProvider = getBool(getCookie('isProvider'))
 
 //DOM Elements
@@ -15,25 +16,88 @@ const userDetailInsurance = document.getElementById('user-detail-insurance')
 const userDetailType = document.getElementById('user-detail-type')
 const userDetailAdditionalDetails = document.getElementById('user-detail-additionalDetails')
 const tableBody = document.getElementById("table-body")
+const tableSharedBody = document.getElementById("table-shared-details-body")
 const tableDetails = document.getElementById("table-details")
 const addNewType = document.getElementById("create-new-button")
 const submitForm = document.getElementById("note-form")
-const errorDiv = document.getElementById("error-div")
+const fetchShareUserDetails = document.getElementById("fetch-share-user-details")
+const viewShareUserDetails = document.getElementById("view-shared-user-details")
+const typeOfUser = document.getElementById("type-of-user")
 const noteContainer = document.getElementById("note-container")
 const logout = document.getElementById("logout")
+const guestCheckbox = document.getElementById('guest-checkbox')
+const toggleRefresh = document.getElementById('toggle-refresh')
+let counterToStopApiCall = 0;
+let localStorageKey = `U_${loggedInUserId}`;
 
 if(!loggedInUserId){
     alert("Please login")
     window.location.replace("/login.html")
 }
 
+if(isProvider){
+    typeOfUser.innerHTML = `Hello Provider ${loggedInUserName}`
+    localStorageKey = `P_${loggedInUserId}`
+} else {
+    typeOfUser.innerHTML = `Hello User ${loggedInUserName}`
+}
+
+const viewSharedUserDetails = (setValueToLocalStorage = "") => {
+    let fetchExistingCollection = localStorage.getItem(localStorageKey) || setValueToLocalStorage || '';
+    let storageCollection = fetchExistingCollection ? fetchExistingCollection.split(",") : [];
+    for(let i=0; i < storageCollection.length; i++){
+        let splitDetails = storageCollection[i].split('/');
+        const tableRow = `<tr>
+                             <th scope="row">${splitDetails[0]}</th>
+                             <td><button class="btn btn-secondary" onclick=viewSharedGuestDetails('${storageCollection[i].trim()}')> View </button></td>
+                             <td><button class="btn btn-secondary" onclick=deleteSharedUserDetails('${storageCollection[i].trim()}')> Delete </button></td>
+                           </tr>
+                          `;
+        tableSharedBody.innerHTML += tableRow;
+    }
+}
+
+const viewSharedGuestDetails = (sharedValue) => {
+    let splitDetails = sharedValue.split('/')
+    // Id and user id
+    getUserDetail(splitDetails[2], true)
+}
+
+const deleteSharedUserDetails = (sharedValue) => {
+    let fetchExistingCollection = localStorage.getItem(localStorageKey) || '';
+    let storageCollection = fetchExistingCollection ? fetchExistingCollection.split(",") : [];
+    var updatedSharedCollection = '';
+    for(let i=0; i < storageCollection.length; i++){
+        if(sharedValue !== storageCollection[1]){
+            updatedSharedCollection += `, ${storageCollection[1]}`
+        }
+    }
+
+    localStorage.setItem(updatedSharedCollection);
+}
+
+const enableToggleRefreshButton = () => {
+    if(isProvider && selectedId > 0 ){
+        toggleRefresh.classList.remove('hide')
+    } else {
+        toggleRefresh.classList.add('hide')
+        // To stop the setInterval in case its active
+        counterToStopApiCall = 21
+    }
+}
+
 // Below code is for User Details
 const baseUserDetailUrl = 'http://localhost:8080/api/v1/userDetail'
+const baseGuestUrl = 'http://localhost:8080/api/v1/guest'
 
 let selectedId = 0; // This has to be selected id
 
- const getUserDetail = (id) => {
-        axios.get(`${baseUserDetailUrl}/getById/${id}`)
+ const getUserDetail = (id, isUser= false) => {
+        let getApi = `${baseUserDetailUrl}/getById/${id}`
+        if(isProvider && !isUser){
+            getApi = `${baseGuestUrl}/getById/${id}`
+        }
+        axios.get(getApi)
             .then((res) => {
                 const userDetailInfo = res.data;
                 console.log("--- get by id userDetail Info --",userDetailInfo);
@@ -57,10 +121,19 @@ const editUserDetails = (id) => {
      selectedId = id;
      getUserDetail(id);
      userDetailForm.classList.remove('hide')
+     enableToggleRefreshButton();
 }
 
 const deleteUserDetails = (id) => {
-     axios.delete(`${baseUserDetailUrl}/delete/${id}`)
+     let deleteApi = `${baseUserDetailUrl}/delete/${id}`
+     if(isProvider){
+         deleteApi = `${baseGuestUrl}/delete/${id}`
+     }
+     if(id === selectedId){
+        enableToggleRefreshButton()
+     }
+
+     axios.delete(deleteApi)
      .then(res => {
          alert("Information deleted successfully.. ");
          getAllUserUserDetail();
@@ -69,18 +142,29 @@ const deleteUserDetails = (id) => {
 }
 
 
-const shareUserDetails = (id) => {
-     // Copy the text inside the text field
-     navigator.clipboard.writeText(`User/${loggedInUserId}/${id}`);
+const shareUserDetails = (id, selectedName) => {
+    let shareUrl = `${selectedName}/${loggedInUserId}/${id}`
+    if(isProvider){
+        shareUrl = window.location.origin + `/guest.html?id=${id}`
+    }
 
-     // Alert the copied text
-     alert("Copied user id and details if to clipboard for sharing : " + `User/${loggedInUserId}/${id}`);
+    // Copy the text inside the text field
+    navigator.clipboard.writeText(shareUrl);
+
+    // Alert the copied text
+    alert("Copied user id and details if to clipboard for sharing : " + shareUrl);
 }
 
 
 const getAllUserUserDetail = () => {
-         tableBody.innerHTML = "";
-        axios.get(`${baseUserDetailUrl}/getAllByUserId/${loggedInUserId}`)
+        tableBody.innerHTML = "";
+
+        let getApi = `${baseUserDetailUrl}/getAllByUserId/${loggedInUserId}`;
+        if(isProvider){
+             getApi = `${baseGuestUrl}/getAllGuestByProviderId/${loggedInUserId}`;
+        }
+
+        axios.get(getApi)
             .then((res) => {
                 const userDetailInfo  = res.data;
                 console.log("--- All user user detail Info --", userDetailInfo);
@@ -89,12 +173,12 @@ const getAllUserUserDetail = () => {
                     addNewType.classList.remove('hide')
                     for(let i=0; i<userDetailInfo.length; i++){
                         const tableRow = `<tr>
-                                                 <th scope="row">${userDetailInfo[i].type}</th>
-                                                 <td><button class="btn btn-secondary" onclick=shareUserDetails(${userDetailInfo[i].id})> Share </button></td>
-                                                 <td><button class="btn btn-secondary" onclick=editUserDetails(${userDetailInfo[i].id})> Edit </button></td>
-                                                 <td><button class="btn btn-secondary" onclick=deleteUserDetails(${userDetailInfo[i].id})> Delete </button></td>
-                                               </tr>
-                                             `;
+                                             <th scope="row">${userDetailInfo[i].type}</th>
+                                             <td><button class="btn btn-secondary" onclick=shareUserDetails(${userDetailInfo[i].id},'${userDetailInfo[i].firstName}')> Share </button></td>
+                                             <td><button class="btn btn-secondary" onclick=editUserDetails(${userDetailInfo[i].id})> Edit </button></td>
+                                             <td><button class="btn btn-secondary" onclick=deleteUserDetails(${userDetailInfo[i].id})> Delete </button></td>
+                                           </tr>
+                                          `;
 
                         tableBody.innerHTML += tableRow;
                     }
@@ -111,11 +195,11 @@ getAllUserUserDetail();
 
 const createUpdateSubmit = async (e) => {
        e.preventDefault()
-       if(!userDetailType.value || !userDetailFirstname.value || !userDetailLastname.value){
-           errorDiv.classList.remove('hide')
-           return;
-       }
-       errorDiv.classList.add('hide')
+//       if(!userDetailType.value || !userDetailFirstname.value || !userDetailLastname.value){
+//           errorDiv.classList.remove('hide')
+//           return;
+//       }
+//       errorDiv.classList.add('hide')
 
        let bodyObj = {
            firstName: userDetailFirstname.value,
@@ -130,17 +214,21 @@ const createUpdateSubmit = async (e) => {
            type: userDetailType.value,
            additionalDetails: userDetailAdditionalDetails.value,
        }
-       let apiUrl = `${baseUserDetailUrl}/create/${loggedInUserId}`;
 
+       let createApi = `${baseUserDetailUrl}/create/${loggedInUserId}`;
+       let updateApi = `${baseUserDetailUrl}/update`;
+       if(isProvider){
+            createApi = `${baseGuestUrl}/createGuestByProviderId/${loggedInUserId}`;
+            updateApi = `${baseGuestUrl}/update`;
+       }
        //Update userDetail details with id
        if(selectedId > 0) {
-            apiUrl = `${baseUserDetailUrl}/update`;
             bodyObj = {
                 ...bodyObj,
                 id: selectedId,
             }
 
-            axios.put(apiUrl, bodyObj)
+            axios.put(updateApi, bodyObj)
                  .then((res) => {
                      console.log("--Updated User Detail--", res.data)
                      if(res.data.id){
@@ -153,13 +241,14 @@ const createUpdateSubmit = async (e) => {
                  })
        } else {
            // Create userDetail
-           axios.post(apiUrl, bodyObj)
+           axios.post(createApi, bodyObj)
                  .then((res) => {
                      console.log("--Created User  Detail--", res.data)
                      if(res.data.id){
                         getAllUserUserDetail();
                         selectedId = res.data.id;
                         getUserDetail(res.data.id);
+                        enableToggleRefreshButton()
                      }
                  })
                   .catch(error => {
@@ -186,8 +275,49 @@ const addNewClick = (e) => {
     userDetailAdditionalDetails.value = "";
 }
 
+const handleRefreshToggle = (e) => {
+   e.preventDefault()
+   if(guestCheckbox.checked){
+         var elements = userDetailForm.elements;
+         for (var i = 0, len = elements.length; i < len; ++i) {
+             elements[i].readOnly = true;
+             elements[i].disabled = true;
+         }
+         interval = setInterval(function() {
+           getUserDetail(selectedId);
+           counterToStopApiCall++;
+         }, 2000);
+
+        if(counterToStopApiCall == 15){
+            clearInterval(interval);
+        }
+   } else {
+        counterToStopApiCall = 21;
+        clearInterval(interval);
+        var elements = userDetailForm.elements;
+        for (var i = 0, len = elements.length; i < len; ++i) {
+             elements[i].readOnly = false;
+             elements[i].disabled = false;
+        }
+   }
+}
+
+
+const fetchShareUserDetailsClick = (e) => {
+   e.preventDefault()
+
+   let sharedValue = viewShareUserDetails.value;
+   let fetchExistingCollection = localStorage.getItem(localStorageKey) || '';
+
+   localStorage.setItem(localStorageKey, `${fetchExistingCollection}, ${sharedValue}`);
+   viewSharedUserDetails(`${fetchExistingCollection}, ${sharedValue}`);
+}
+
+
+guestCheckbox.addEventListener("change", handleRefreshToggle)
 userDetailForm.addEventListener("submit", createUpdateSubmit)
 addNewType.addEventListener("click", addNewClick)
+fetchShareUserDetails.addEventListener("click", fetchShareUserDetailsClick)
 
 // Below this line is the code from class for note
 //Modal Elements

@@ -111,6 +111,11 @@ const guestCheckbox = document.getElementById('guest-checkbox')
        if(guestCheckbox.checked){
             counterToStopApiCall = 21;
             clearInterval(interval);
+             var elements = guestForm.elements;
+             for (var i = 0, len = elements.length; i < len; ++i) {
+                 elements[i].readOnly = false;
+                 elements[i].disabled = false;
+             }
        } else {
              interval = setInterval(function() {
                getGuestDetail();
@@ -120,6 +125,11 @@ const guestCheckbox = document.getElementById('guest-checkbox')
             if(counterToStopApiCall == 15){
                 clearInterval(interval);
             }
+            var elements = guestForm.elements;
+             for (var i = 0, len = elements.length; i < len; ++i) {
+                 elements[i].readOnly = true;
+                 elements[i].disabled = true;
+             }
        }
     }
 
