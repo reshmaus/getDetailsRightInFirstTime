@@ -4,6 +4,7 @@ const isProvider = getBool(getCookie('isProvider'))
 
 //DOM Elements
 const userDetailForm = document.getElementById('user-detail-form')
+const userDetailFormActual = document.getElementById('user-detail-form-actual')
 const userDetailFirstname = document.getElementById('user-detail-firstname')
 const userDetailLastname = document.getElementById('user-detail-lastname')
 const userDetailStreet1 = document.getElementById('user-detail-street-1')
@@ -16,41 +17,54 @@ const userDetailInsurance = document.getElementById('user-detail-insurance')
 const userDetailType = document.getElementById('user-detail-type')
 const userDetailAdditionalDetails = document.getElementById('user-detail-additionalDetails')
 const tableBody = document.getElementById("table-body")
+const tableSharedDetails = document.getElementById("table-shared-details")
+const viewSharedViewDetailsDiv = document.getElementById("view-share-view-details")
+const tableSavedDetails = document.getElementById("table-saved-details")
 const tableSharedBody = document.getElementById("table-shared-details-body")
 const tableDetails = document.getElementById("table-details")
+const showTables = document.getElementById("show_table")
 const addNewType = document.getElementById("create-new-button")
 const submitForm = document.getElementById("note-form")
 const fetchShareUserDetails = document.getElementById("fetch-share-user-details")
+const viewShareDetailsTable = document.getElementById("view-shared-details")
 const viewShareUserDetails = document.getElementById("view-shared-user-details")
 const typeOfUser = document.getElementById("type-of-user")
 const noteContainer = document.getElementById("note-container")
 const logout = document.getElementById("logout")
 const guestCheckbox = document.getElementById('guest-checkbox')
 const toggleRefresh = document.getElementById('toggle-refresh')
-let counterToStopApiCall = 0;
-let localStorageKey = `U_${loggedInUserId}`;
+const formSubmitButton = document.getElementById('submit-button')
+
+let counterToStopApiCall = 0
+let localStorageKey = `U_${loggedInUserId}`
+let onlyViewNoEditForm = false;
 
 if(!loggedInUserId){
     alert("Please login")
     window.location.replace("/login.html")
 }
 
-if(isProvider){
-    typeOfUser.innerHTML = `Hello Provider ${loggedInUserName}`
-    localStorageKey = `P_${loggedInUserId}`
-} else {
-    typeOfUser.innerHTML = `Hello User ${loggedInUserName}`
-}
-
 const viewSharedUserDetails = (setValueToLocalStorage = "") => {
     let fetchExistingCollection = localStorage.getItem(localStorageKey) || setValueToLocalStorage || '';
     let storageCollection = fetchExistingCollection ? fetchExistingCollection.split(",") : [];
-    for(let i=0; i < storageCollection.length; i++){
-        let splitDetails = storageCollection[i].split('/');
+    let uniqueStorageCollection = [...new Set(storageCollection)]
+
+    if(uniqueStorageCollection.length > 0){
+        viewShareDetailsTable.classList.remove('hide')
+         showTables.classList.remove('hide')
+        tableSharedDetails.classList.remove('hide')
+    } else {
+        viewShareDetailsTable.classList.add('hide')
+        tableSharedDetails.classList.add('hide')
+    }
+    tableSharedBody.innerHTML = "";
+
+    for(let i=0; i < uniqueStorageCollection.length; i++){
+        let splitDetails = uniqueStorageCollection[i].split('/');
         const tableRow = `<tr>
                              <th scope="row">${splitDetails[0]}</th>
-                             <td><button class="btn btn-secondary" onclick=viewSharedGuestDetails('${storageCollection[i].trim()}')> View </button></td>
-                             <td><button class="btn btn-secondary" onclick=deleteSharedUserDetails('${storageCollection[i].trim()}')> Delete </button></td>
+                             <td><button class="btn btn-secondary" onclick=viewSharedGuestDetails('${uniqueStorageCollection[i].trim()}')> View </button></td>
+                             <td><button class="btn btn-secondary" onclick=deleteSharedUserDetails('${uniqueStorageCollection[i].trim()}')> Delete </button></td>
                            </tr>
                           `;
         tableSharedBody.innerHTML += tableRow;
@@ -59,33 +73,78 @@ const viewSharedUserDetails = (setValueToLocalStorage = "") => {
 
 const viewSharedGuestDetails = (sharedValue) => {
     let splitDetails = sharedValue.split('/')
+    userDetailForm.classList.remove('hide')
     // Id and user id
     getUserDetail(splitDetails[2], true)
+    onlyViewNoEditForm = true;
+    enableToggleRefreshButton();
 }
 
 const deleteSharedUserDetails = (sharedValue) => {
     let fetchExistingCollection = localStorage.getItem(localStorageKey) || '';
     let storageCollection = fetchExistingCollection ? fetchExistingCollection.split(",") : [];
-    var updatedSharedCollection = '';
-    for(let i=0; i < storageCollection.length; i++){
-        if(sharedValue !== storageCollection[1]){
-            updatedSharedCollection += `, ${storageCollection[1]}`
+    var updatedSharedCollection = [];
+    let uniqueStorageCollection = [...new Set(storageCollection)]
+    for(let i=0; i < uniqueStorageCollection.length; i++){
+        if(sharedValue != uniqueStorageCollection[i].trim()){
+            updatedSharedCollection.push(uniqueStorageCollection[i])
         }
     }
+    localStorage.setItem(localStorageKey, updatedSharedCollection.toString());
 
-    localStorage.setItem(updatedSharedCollection);
+    let sharedSplit = sharedValue.split('/');
+    if(sharedSplit.length > 0 && sharedSplit[2] == selectedId){
+        userDetailForm.classList.add('hide')
+        onlyViewNoEditForm = false;
+     }
+    viewSharedUserDetails(updatedSharedCollection.toString());
 }
 
 const enableToggleRefreshButton = () => {
-    if(isProvider && selectedId > 0 ){
+    if(isProvider && selectedId > 0 && !onlyViewNoEditForm){
         toggleRefresh.classList.remove('hide')
     } else {
         toggleRefresh.classList.add('hide')
         // To stop the setInterval in case its active
         counterToStopApiCall = 21
     }
+
+    if(onlyViewNoEditForm){
+        var elements = userDetailFormActual.elements;
+         for (var i = 0, len = elements.length; i < len; ++i) {
+             elements[i].readOnly = true;
+             elements[i].disabled = true;
+         }
+         formSubmitButton.classList.add('hide')
+    } else {
+        var elements = userDetailFormActual.elements;
+         for (var i = 0, len = elements.length; i < len; ++i) {
+             elements[i].readOnly = false;
+             elements[i].disabled = false;
+         }
+         formSubmitButton.classList.remove('hide')
+    }
 }
 
+if(isProvider){
+    typeOfUser.innerHTML = `Hello Provider ${loggedInUserName}`
+    localStorageKey = `P_${loggedInUserId}`
+    let storedValue = localStorage.getItem(localStorageKey) || '';
+    viewSharedViewDetailsDiv.classList.remove('hide')
+    if(storedValue !== "") {
+        viewSharedUserDetails(storedValue);
+        viewShareDetailsTable.classList.remove('hide')
+        showTables.classList.remove('hide')
+    } else {
+        viewShareDetailsTable.classList.add('hide')
+    }
+    showTables.classList.remove('hide')
+    tableDetails.classList.remove('hide')
+    addNewType.classList.remove('hide')
+} else {
+     viewSharedViewDetailsDiv.classList.add('hide')
+    typeOfUser.innerHTML = `Hello User ${loggedInUserName}`
+}
 // Below code is for User Details
 const baseUserDetailUrl = 'http://localhost:8080/api/v1/userDetail'
 const baseGuestUrl = 'http://localhost:8080/api/v1/guest'
@@ -101,7 +160,9 @@ let selectedId = 0; // This has to be selected id
             .then((res) => {
                 const userDetailInfo = res.data;
                 console.log("--- get by id userDetail Info --",userDetailInfo);
+
                 if(userDetailInfo.id) {
+                     selectedId = userDetailInfo.id;
                      userDetailFirstname.value = userDetailInfo.firstName ;
                      userDetailLastname.value = userDetailInfo.lastName ;
                      userDetailStreet1.value = userDetailInfo.street1 ;
@@ -121,6 +182,7 @@ const editUserDetails = (id) => {
      selectedId = id;
      getUserDetail(id);
      userDetailForm.classList.remove('hide')
+     onlyViewNoEditForm = false;
      enableToggleRefreshButton();
 }
 
@@ -129,7 +191,7 @@ const deleteUserDetails = (id) => {
      if(isProvider){
          deleteApi = `${baseGuestUrl}/delete/${id}`
      }
-     if(id === selectedId){
+     if(id == selectedId){
         enableToggleRefreshButton()
      }
 
@@ -137,13 +199,15 @@ const deleteUserDetails = (id) => {
      .then(res => {
          alert("Information deleted successfully.. ");
          getAllUserUserDetail();
-         userDetailForm.classList.add('hide')
+         if(id === selectedId){
+            userDetailForm.classList.add('hide')
+         }
      });
 }
 
 
 const shareUserDetails = (id, selectedName) => {
-    let shareUrl = `${selectedName}/${loggedInUserId}/${id}`
+    let shareUrl = `${selectedName}/${loggedInUserId}/${id}/user`
     if(isProvider){
         shareUrl = window.location.origin + `/guest.html?id=${id}`
     }
@@ -170,7 +234,10 @@ const getAllUserUserDetail = () => {
                 console.log("--- All user user detail Info --", userDetailInfo);
                 if(userDetailInfo && userDetailInfo.length > 0){
                     tableDetails.classList.remove('hide')
+                    showTables.classList.remove('hide')
                     addNewType.classList.remove('hide')
+                    tableSavedDetails.classList.remove('hide')
+
                     for(let i=0; i<userDetailInfo.length; i++){
                         const tableRow = `<tr>
                                              <th scope="row">${userDetailInfo[i].type}</th>
@@ -183,9 +250,16 @@ const getAllUserUserDetail = () => {
                         tableBody.innerHTML += tableRow;
                     }
                 } else {
-                    tableDetails.classList.add('hide')
-                    addNewType.classList.add('hide')
-                    addNewClick();
+                    if(!isProvider) {
+                        tableDetails.classList.add('hide')
+                        addNewType.classList.add('hide')
+                        addNewClick();
+                    } else {
+                        tableDetails.classList.remove('hide')
+                        showTables.classList.remove('hide')
+                        addNewType.classList.remove('hide')
+                    }
+                    tableSavedDetails.classList.add('hide')
                 }
             });
     };
@@ -214,7 +288,7 @@ const createUpdateSubmit = async (e) => {
            type: userDetailType.value,
            additionalDetails: userDetailAdditionalDetails.value,
        }
-
+       onlyViewNoEditForm = false;
        let createApi = `${baseUserDetailUrl}/create/${loggedInUserId}`;
        let updateApi = `${baseUserDetailUrl}/update`;
        if(isProvider){
@@ -278,11 +352,12 @@ const addNewClick = (e) => {
 const handleRefreshToggle = (e) => {
    e.preventDefault()
    if(guestCheckbox.checked){
-         var elements = userDetailForm.elements;
+         var elements = userDetailFormActual.elements;
          for (var i = 0, len = elements.length; i < len; ++i) {
              elements[i].readOnly = true;
              elements[i].disabled = true;
          }
+         // This is where it keep calling api for every 2sec for auto refresh full details
          interval = setInterval(function() {
            getUserDetail(selectedId);
            counterToStopApiCall++;
@@ -294,7 +369,7 @@ const handleRefreshToggle = (e) => {
    } else {
         counterToStopApiCall = 21;
         clearInterval(interval);
-        var elements = userDetailForm.elements;
+        var elements = userDetailFormActual.elements;
         for (var i = 0, len = elements.length; i < len; ++i) {
              elements[i].readOnly = false;
              elements[i].disabled = false;
@@ -305,12 +380,17 @@ const handleRefreshToggle = (e) => {
 
 const fetchShareUserDetailsClick = (e) => {
    e.preventDefault()
-
    let sharedValue = viewShareUserDetails.value;
    let fetchExistingCollection = localStorage.getItem(localStorageKey) || '';
+   let storageCollection = fetchExistingCollection ? fetchExistingCollection.split(",") : [];
+   storageCollection.push(sharedValue.trim());
 
-   localStorage.setItem(localStorageKey, `${fetchExistingCollection}, ${sharedValue}`);
-   viewSharedUserDetails(`${fetchExistingCollection}, ${sharedValue}`);
+   var updatedSharedCollection = '';
+   let uniqueStorageCollection = [...new Set(storageCollection)]
+
+   localStorage.setItem(localStorageKey, uniqueStorageCollection.toString());
+
+   viewSharedUserDetails(uniqueStorageCollection.toString());
 }
 
 
