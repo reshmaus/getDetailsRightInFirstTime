@@ -305,7 +305,7 @@ const createUpdateSubmit = async (e) => {
             axios.put(updateApi, bodyObj)
                  .then((res) => {
                      console.log("--Updated User Detail--", res.data)
-                     alert("Details created successfully");
+                     alert("Details updated successfully");
                      if(res.data.id){
                          getUserDetail(res.data.id);
                          getAllUserUserDetail();
@@ -319,7 +319,7 @@ const createUpdateSubmit = async (e) => {
            axios.post(createApi, bodyObj)
                  .then((res) => {
                      console.log("--Created User  Detail--", res.data)
-                     alert("Details updated successfully");
+                     alert("Details created successfully");
                      if(res.data.id){
                         getAllUserUserDetail();
                         selectedId = res.data.id;
