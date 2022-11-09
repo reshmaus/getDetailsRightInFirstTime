@@ -28,7 +28,7 @@ public class ProviderServiceImpl implements ProviderService  {
         List<String> response = new ArrayList<>();
         Provider provider = new Provider(providerDto);
         providerRepository.saveAndFlush(provider);
-        response.add("http://localhost:8080/login.html");
+        response.add("/login.html");
         return response;
 
     }

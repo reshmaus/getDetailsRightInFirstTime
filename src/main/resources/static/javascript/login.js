@@ -14,8 +14,8 @@ const registerProviderCheckbox = document.getElementById('registry-provider-chec
          'Content-Type':'application/json'
     }
 
-    const baseUserUrl = 'http://localhost:8080/api/v1/users'
-    const baseProviderUrl = 'http://localhost:8080/api/v1/providers'
+    const baseUserUrl = '/api/v1/users'
+    const baseProviderUrl = '/api/v1/providers'
 
     const handleSubmit = async (e) => {
        e.preventDefault()
@@ -50,16 +50,16 @@ const registerProviderCheckbox = document.getElementById('registry-provider-chec
        if (response.status === 200 && responseArr[0] === 'successful'){
            setCookie('loggedInUserId', responseArr[1])
            setCookie('loggedInUserName', loginUsername.value)
-           window.location.replace('http://localhost:8080/home.html')
+           window.location.replace('/home.html')
        } else if(response.status === 200 && responseArr[0] === 'error'){
             errorDiv.innerHTML = responseArr[1];
             errorDiv.classList.remove('hide')
        }
 
 //       if(registerProviderCheckbox.checked){
-//           window.location.replace('http://localhost:8080/provider.html')
+//           window.location.replace('/provider.html')
 //       } else {
-//           window.location.replace('http://localhost:8080/home.html')
+//           window.location.replace('/home.html')
 //       }
 
     }

@@ -146,8 +146,8 @@ if(isProvider){
     typeOfUser.innerHTML = `Hello User ${loggedInUserName}`
 }
 // Below code is for User Details
-const baseUserDetailUrl = 'http://localhost:8080/api/v1/userDetail'
-const baseGuestUrl = 'http://localhost:8080/api/v1/guest'
+const baseUserDetailUrl = '/api/v1/userDetail'
+const baseGuestUrl = '/api/v1/guest'
 
 let selectedId = 0; // This has to be selected id
 
@@ -412,7 +412,7 @@ const headers = {
     'Content-Type': 'application/json'
 }
 
-const baseUrl = "http://localhost:8080/api/v1/notes/"
+const baseUrl = "/api/v1/notes/"
 
 const handleSubmit = async (e) => {
     e.preventDefault()

@@ -17,7 +17,7 @@ const guestCheckbox = document.getElementById('guest-checkbox')
 
     let counterToStopApiCall = 0;
     let interval = {}
-    const baseGuestUrl = 'http://localhost:8080/api/v1/guest'
+    const baseGuestUrl = '/api/v1/guest'
 
     const getGuestDetail = () => {
         axios.get(`${baseGuestUrl}/getById/${id}`)

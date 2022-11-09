@@ -17,8 +17,8 @@ const registerCountry = document.getElementById('register-country')
           'Content-Type':'application/json'
     }
 
-    const baseUserUrl = 'http://localhost:8080/api/v1/users'
-    const baseProviderUrl = 'http://localhost:8080/api/v1/providers'
+    const baseUserUrl = '/api/v1/users'
+    const baseProviderUrl = '/api/v1/providers'
 
     const handleSubmit = async (e) => {
        e.preventDefault()
