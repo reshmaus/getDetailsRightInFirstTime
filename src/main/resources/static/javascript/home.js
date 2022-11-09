@@ -305,6 +305,7 @@ const createUpdateSubmit = async (e) => {
             axios.put(updateApi, bodyObj)
                  .then((res) => {
                      console.log("--Updated User Detail--", res.data)
+                     alert("Details created successfully");
                      if(res.data.id){
                          getUserDetail(res.data.id);
                          getAllUserUserDetail();
@@ -318,6 +319,7 @@ const createUpdateSubmit = async (e) => {
            axios.post(createApi, bodyObj)
                  .then((res) => {
                      console.log("--Created User  Detail--", res.data)
+                     alert("Details updated successfully");
                      if(res.data.id){
                         getAllUserUserDetail();
                         selectedId = res.data.id;
@@ -335,6 +337,7 @@ const addNewClick = (e) => {
     if(e) { e.preventDefault() }
     selectedId = 0;
     userDetailForm.classList.remove('hide')
+    onlyViewNoEditForm = false;
 
     userDetailFirstname.value = "";
     userDetailLastname.value = "";
@@ -347,6 +350,7 @@ const addNewClick = (e) => {
     userDetailInsurance.value = "";
     userDetailType.value = "";
     userDetailAdditionalDetails.value = "";
+    enableToggleRefreshButton()
 }
 
 const handleRefreshToggle = (e) => {
@@ -377,7 +381,7 @@ const handleRefreshToggle = (e) => {
    }
 }
 
-
+//on click on share the value generated is stored in local storage
 const fetchShareUserDetailsClick = (e) => {
    e.preventDefault()
    let sharedValue = viewShareUserDetails.value;

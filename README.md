@@ -45,15 +45,21 @@ Providers logged in can create and share the URL for Guest to see and correct if
 
 
 ## :exclamation: Tech Stack
+HTML
+CSS
+Javascript
+Axios
 Java
+Spring
 Spring Boot
 JPA/ Hibernate
-Javascript 
 PostgreSQL 
+Bootstrap
 Heroku
 Maven
 
-
+# : Figma link: https://www.figma.com/file/X9XZNdtZSCSYk3z2eugJJQ/Capstone_project2?node-id=0%3A1
+# : Database Design: https://dbdesigner.page.link/HbsCezcEYcijNVUWA
 
 ## :exclamation: Getting Started 
 TBD
