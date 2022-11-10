@@ -46,7 +46,7 @@ const guestCheckbox = document.getElementById('guest-checkbox')
         interval = setInterval(function() {
            getGuestDetail();
            counterToStopApiCall++;
-         }, 10000);
+         }, 1500);
 
         if(counterToStopApiCall == 15){
             clearInterval(interval);

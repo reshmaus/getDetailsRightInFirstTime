@@ -365,7 +365,7 @@ const handleRefreshToggle = (e) => {
          interval = setInterval(function() {
            getUserDetail(selectedId);
            counterToStopApiCall++;
-         }, 2000);
+         }, 1500);
 
         if(counterToStopApiCall == 15){
             clearInterval(interval);
